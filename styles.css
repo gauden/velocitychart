@@ -204,7 +204,7 @@ select {
 
 .legend {
   display: grid;
-  grid-template-columns: repeat(5, 28px);
+  grid-template-columns: repeat(11, 18px);
   gap: 2px;
   align-items: center;
   margin-top: 4px;
@@ -214,6 +214,14 @@ select {
   display: block;
   height: 12px;
   border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.attribution {
+  margin: 0;
+  border-bottom: 1px solid var(--line);
+  padding: 8px 18px;
+  color: var(--muted);
+  font-size: 0.78rem;
 }
 
 .chart-output {

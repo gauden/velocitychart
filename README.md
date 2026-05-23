@@ -1,6 +1,6 @@
 # Velocity Chart
 
-A static, client-side PyScript tool for generating circular velocity charts from CSV time series.
+A static, client-side PyScript tool for generating circular velocity charts from CSV time series. Each radial spoke is one entity, and time runs from the center outward.
 
 The app accepts either:
 
@@ -32,6 +32,12 @@ http://127.0.0.1:8000/
 ```
 
 The app loads PyScript from its public CDN.
+
+## Color
+
+The app uses accessible diverging palettes from ColorBrewer 2.0.
+
+Attribution: ColorBrewer 2.0 color schemes by Cynthia A. Brewer, Geography, Pennsylvania State University. See <https://colorbrewer2.org/>.
 
 ## CSV Formats
 

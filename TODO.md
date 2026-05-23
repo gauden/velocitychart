@@ -30,3 +30,11 @@
 - [ ] Full PyScript runtime smoke test in a regular browser
 - [x] Create private GitHub repository
 - [x] Push implementation and provide private GitHub link
+
+## Phase 5 - Radial Series Redesign
+
+- [x] Make each radial series represent one entity
+- [x] Make time run from the center outward
+- [x] Replace custom palettes with ColorBrewer diverging schemes
+- [x] Add ColorBrewer attribution
+- [ ] Verify and publish redesign

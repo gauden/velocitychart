@@ -3,6 +3,7 @@ from __future__ import annotations
 import html
 import math
 import csv
+import asyncio
 from dataclasses import dataclass
 from io import StringIO
 
@@ -126,11 +127,74 @@ except ModuleNotFoundError:
         return sorted(rows, key=lambda row: (row.group.lower(), key_function(row), row.name.lower()))
 
 
+# ColorBrewer 2.0 diverging schemes by Cynthia A. Brewer,
+# Geography, Pennsylvania State University. https://colorbrewer2.org/
 PALETTES = {
-    "red_green": ("#2f8f67", "#f7f7f2", "#b94235"),
-    "red_blue": ("#3569a8", "#f7f7f2", "#bd3d31"),
-    "purple_teal": ("#188f88", "#f7f7f2", "#7b4aa8"),
-    "orange_cyan": ("#2b94a8", "#f7f7f2", "#c7691f"),
+    "rdylgn": [
+        "#a50026",
+        "#d73027",
+        "#f46d43",
+        "#fdae61",
+        "#fee08b",
+        "#ffffbf",
+        "#d9ef8b",
+        "#a6d96a",
+        "#66bd63",
+        "#1a9850",
+        "#006837",
+    ],
+    "rdbu": [
+        "#67001f",
+        "#b2182b",
+        "#d6604d",
+        "#f4a582",
+        "#fddbc7",
+        "#f7f7f7",
+        "#d1e5f0",
+        "#92c5de",
+        "#4393c3",
+        "#2166ac",
+        "#053061",
+    ],
+    "brbg": [
+        "#543005",
+        "#8c510a",
+        "#bf812d",
+        "#dfc27d",
+        "#f6e8c3",
+        "#f5f5f5",
+        "#c7eae5",
+        "#80cdc1",
+        "#35978f",
+        "#01665e",
+        "#003c30",
+    ],
+    "piyg": [
+        "#8e0152",
+        "#c51b7d",
+        "#de77ae",
+        "#f1b6da",
+        "#fde0ef",
+        "#f7f7f7",
+        "#e6f5d0",
+        "#b8e186",
+        "#7fbc41",
+        "#4d9221",
+        "#276419",
+    ],
+    "puor": [
+        "#7f3b08",
+        "#b35806",
+        "#e08214",
+        "#fdb863",
+        "#fee0b6",
+        "#f7f7f7",
+        "#d8daeb",
+        "#b2abd2",
+        "#8073ac",
+        "#542788",
+        "#2d004b",
+    ],
 }
 
 GROUP_COLORS = [
@@ -192,15 +256,14 @@ def interpolate_hex(left: str, right: str, amount: float) -> str:
 
 
 def velocity_color(value: float, palette_name: str, center: float, maximum: float) -> str:
-    negative, neutral, positive = PALETTES.get(palette_name, PALETTES["red_green"])
+    palette = list(reversed(PALETTES.get(palette_name, PALETTES["rdylgn"])))
     if maximum <= 0:
         maximum = 1
     distance = max(-1.0, min(1.0, (value - center) / maximum))
-    if abs(distance) < 0.015:
-        return neutral
-    if distance > 0:
-        return interpolate_hex(neutral, positive, distance)
-    return interpolate_hex(neutral, negative, abs(distance))
+    scaled = (distance + 1) * (len(palette) - 1) / 2
+    lower = int(math.floor(scaled))
+    upper = min(lower + 1, len(palette) - 1)
+    return interpolate_hex(palette[lower], palette[upper], scaled - lower)
 
 
 def polar_to_cartesian(center: float, radius: float, angle_degrees: float) -> tuple[float, float]:
@@ -232,15 +295,14 @@ def build_svg(rows: list[EntitySeries], controls: dict[str, str]) -> str:
     if not all_years:
         raise ValueError("At least two years of numeric values are required to calculate velocity.")
 
-    center = 500
-    row_height = max(7.0, min(17.0, 360 / max(len(rows), 1)))
-    inner_radius = 96
+    inner_radius = 86
     angle_gap = float(controls["cell_gap"] or 0.8)
     maximum = float(controls["max_velocity"] or 1)
     color_center = float(controls["center_value"] or 0)
-    angle_step = 360 / len(all_years)
-    outer_radius = inner_radius + row_height * len(rows)
-    view_size = int((outer_radius + 105) * 2)
+    angle_step = 360 / len(rows)
+    radial_step = max(24.0, min(46.0, 370 / len(all_years)))
+    outer_radius = inner_radius + radial_step * len(all_years)
+    view_size = int((outer_radius + 148) * 2)
     center = view_size / 2
     group_names = []
     group_palette: dict[str, str] = {}
@@ -255,40 +317,57 @@ def build_svg(rows: list[EntitySeries], controls: dict[str, str]) -> str:
         '<rect width="100%" height="100%" fill="#fffdf8"/>',
         f'<circle cx="{center}" cy="{center}" r="{inner_radius - 18}" fill="#ffffff" stroke="#d8d5cc"/>',
         f'<text x="{center}" y="{center - 8}" text-anchor="middle" font-size="18" font-weight="700" fill="#202124">Velocity</text>',
-        f'<text x="{center}" y="{center + 16}" text-anchor="middle" font-size="12" fill="#667085">{all_years[0]}-{all_years[-1]}</text>',
+        f'<text x="{center}" y="{center + 16}" text-anchor="middle" font-size="12" fill="#667085">center {all_years[0]} / edge {all_years[-1]}</text>',
     ]
 
     for row_index, row in enumerate(rows):
-        inner = inner_radius + row_index * row_height
-        outer = inner + row_height - 0.7
+        start_angle = row_index * angle_step + angle_gap
+        end_angle = (row_index + 1) * angle_step - angle_gap
+        mid_angle = row_index * angle_step + angle_step / 2
         velocities = calculate_velocities(row)
         for year_index, year in enumerate(all_years):
             value = velocities.get(year)
             if value is None:
                 continue
-            start_angle = year_index * angle_step + angle_gap
-            end_angle = (year_index + 1) * angle_step - angle_gap
+            inner = inner_radius + year_index * radial_step + 0.7
+            outer = inner + radial_step - 1.4
             color = velocity_color(value, controls["palette"], color_center, maximum)
             path = annular_cell_path(center, inner, outer, start_angle, end_angle)
             label = html.escape(f"{row.name}, {year}: {value:.2f}")
             parts.append(f'<path d="{path}" fill="{color}" stroke="#ffffff" stroke-width="0.15"><title>{label}</title></path>')
 
-        label_angle = 92
-        label_radius = outer_radius + 16
-        x, y = polar_to_cartesian(center, label_radius, label_angle + row_index * 0.07)
+        label_radius = outer_radius + 25
+        x, y = polar_to_cartesian(center, label_radius, mid_angle)
+        rotation = mid_angle - 90
+        anchor = "start"
+        if 90 < mid_angle < 270:
+            rotation += 180
+            anchor = "end"
         parts.append(
-            f'<text x="{x:.2f}" y="{y:.2f}" font-size="8.5" fill="{group_palette[row.group]}" '
-            f'text-anchor="middle">{html.escape(row.code or row.name[:3].upper())}</text>'
+            f'<text x="{x:.2f}" y="{y:.2f}" font-size="9" fill="{group_palette[row.group]}" '
+            f'text-anchor="{anchor}" dominant-baseline="middle" '
+            f'transform="rotate({rotation:.2f} {x:.2f} {y:.2f})">{html.escape(row.code or row.name[:3].upper())}</text>'
         )
+
+    previous_group = None
+    for row_index, row in enumerate(rows):
+        if row.group == previous_group:
+            continue
+        boundary_angle = row_index * angle_step
+        x1, y1 = polar_to_cartesian(center, inner_radius - 2, boundary_angle)
+        x2, y2 = polar_to_cartesian(center, outer_radius + 10, boundary_angle)
+        parts.append(f'<line x1="{x1:.2f}" y1="{y1:.2f}" x2="{x2:.2f}" y2="{y2:.2f}" stroke="#827c70" stroke-width="1.1"/>')
+        previous_group = row.group
+
+    for year_index, year in enumerate(all_years):
+        radius = inner_radius + year_index * radial_step + radial_step / 2
+        parts.append(f'<circle cx="{center}" cy="{center}" r="{radius:.2f}" fill="none" stroke="#d8d5cc" stroke-width="0.35"/>')
 
     for year in (all_years[0], all_years[len(all_years) // 2], all_years[-1]):
         year_index = all_years.index(year)
-        angle = year_index * angle_step + angle_step / 2
-        x1, y1 = polar_to_cartesian(center, inner_radius - 8, angle)
-        x2, y2 = polar_to_cartesian(center, outer_radius + 8, angle)
-        lx, ly = polar_to_cartesian(center, outer_radius + 44, angle)
-        parts.append(f'<line x1="{x1:.2f}" y1="{y1:.2f}" x2="{x2:.2f}" y2="{y2:.2f}" stroke="#b9b5aa" stroke-width="0.7"/>')
-        parts.append(f'<text x="{lx:.2f}" y="{ly:.2f}" text-anchor="middle" font-size="11" fill="#667085">{year}</text>')
+        radius = inner_radius + year_index * radial_step + radial_step / 2
+        lx, ly = polar_to_cartesian(center, radius, 0)
+        parts.append(f'<text x="{lx:.2f}" y="{ly - 5:.2f}" text-anchor="middle" font-size="11" fill="#667085">{year}</text>')
 
     legend_x = 28
     legend_y = view_size - 28 - 18 * len(group_names)
@@ -302,14 +381,7 @@ def build_svg(rows: list[EntitySeries], controls: dict[str, str]) -> str:
 
 
 def render_legend(palette_name: str) -> None:
-    negative, neutral, positive = PALETTES.get(palette_name, PALETTES["red_green"])
-    colors = [
-        interpolate_hex(neutral, negative, 1),
-        interpolate_hex(neutral, negative, 0.45),
-        neutral,
-        interpolate_hex(neutral, positive, 0.45),
-        interpolate_hex(neutral, positive, 1),
-    ]
+    colors = list(reversed(PALETTES.get(palette_name, PALETTES["rdylgn"])))
     by_id("legend").innerHTML = "".join(f'<span style="background:{color}"></span>' for color in colors)
 
 
@@ -330,15 +402,20 @@ def render_chart(event=None) -> None:
 
 
 async def load_demo(event=None) -> None:
-    response = await fetch("./data/world_bank_gdp_growth_demo.csv")
-    text = await response.text()
+    try:
+        response = await fetch("./data/world_bank_gdp_growth_demo.csv")
+        text = await response.text()
+    except Exception as exc:
+        set_status("Demo load failed")
+        by_id("chart-output").innerHTML = f'<div class="error-state">{html.escape(str(exc))}</div>'
+        return
     by_id("csv-input").value = text
     by_id("csv-format").value = "wide"
     by_id("sort-mode").value = "end_velocity"
     by_id("sort-year").value = "2023"
     by_id("max-velocity").value = "10"
     by_id("chart-title").textContent = "GDP growth velocity"
-    by_id("chart-subtitle").textContent = "Annual change in GDP growth rate, percentage points per year"
+    by_id("chart-subtitle").textContent = "Each spoke is a country; annual velocity runs from 2015 at the center to 2023 at the edge"
     render_chart()
 
 
@@ -380,5 +457,6 @@ def attach_events() -> None:
 
 
 attach_events()
-render_legend("red_green")
+render_legend("rdylgn")
 set_status("Ready")
+asyncio.ensure_future(load_demo())

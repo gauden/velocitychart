@@ -80,10 +80,11 @@
             <label>
               Palette
               <select id="palette">
-                <option value="red_green">Red / green</option>
-                <option value="red_blue">Red / blue</option>
-                <option value="purple_teal">Purple / teal</option>
-                <option value="orange_cyan">Orange / cyan</option>
+                <option value="rdylgn">ColorBrewer RdYlGn</option>
+                <option value="rdbu">ColorBrewer RdBu</option>
+                <option value="brbg">ColorBrewer BrBG</option>
+                <option value="piyg">ColorBrewer PiYG</option>
+                <option value="puor">ColorBrewer PuOr</option>
               </select>
             </label>
             <label>
@@ -95,7 +96,7 @@
               <input id="max-velocity" type="number" step="0.1" value="10" />
             </label>
             <label>
-              Cell gap
+              Spoke gap
               <input id="cell-gap" type="number" step="0.1" value="0.8" />
             </label>
           </div>
@@ -110,10 +111,11 @@
           <div class="chart-toolbar">
             <div>
               <h2 id="chart-title">GDP growth velocity demo</h2>
-              <p id="chart-subtitle">Annual change in GDP growth rate, percentage points per year</p>
+              <p id="chart-subtitle">Each spoke is a country; annual velocity runs from 2015 at the center to 2023 at the edge</p>
             </div>
             <div class="legend" id="legend"></div>
           </div>
+          <p class="attribution">Color schemes from ColorBrewer 2.0 by Cynthia A. Brewer, Geography, Pennsylvania State University.</p>
           <div id="chart-output" class="chart-output">
             <div class="empty-state">Load the demo or upload a CSV to render a velocity chart.</div>
           </div>
