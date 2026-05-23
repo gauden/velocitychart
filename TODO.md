@@ -37,4 +37,4 @@
 - [x] Make time run from the center outward
 - [x] Replace custom palettes with ColorBrewer diverging schemes
 - [x] Add ColorBrewer attribution
-- [ ] Verify and publish redesign
+- [x] Verify and publish redesign
