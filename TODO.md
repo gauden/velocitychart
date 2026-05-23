@@ -45,3 +45,10 @@
 - [x] Enlarge and bold entity labels
 - [x] Remove circular tick guides
 - [x] Verify and publish axis gap refinement
+
+## Phase 7 - Label Controls and Legend Direction
+
+- [x] Add center title text control
+- [x] Add center subtitle text control
+- [x] Add negative and positive legend endpoint labels
+- [ ] Verify and publish label controls

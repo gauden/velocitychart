@@ -204,7 +204,7 @@ select {
 
 .legend {
   display: grid;
-  grid-template-columns: repeat(11, 18px);
+  grid-template-columns: auto repeat(11, 18px) auto;
   gap: 2px;
   align-items: center;
   margin-top: 4px;
@@ -214,6 +214,14 @@ select {
   display: block;
   height: 12px;
   border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.legend-mark {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 800;
+  line-height: 1;
+  padding: 0 4px;
 }
 
 .attribution {

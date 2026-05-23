@@ -229,6 +229,8 @@ def read_controls() -> dict[str, str]:
         "sort_year": by_id("sort-year").value,
         "palette": by_id("palette").value,
         "center_value": by_id("center-value").value,
+        "center_title": by_id("center-title").value.strip() or "Velocity",
+        "center_subtitle": by_id("center-subtitle").value.strip(),
         "max_velocity": by_id("max-velocity").value,
         "cell_gap": by_id("cell-gap").value,
     }
@@ -299,6 +301,8 @@ def build_svg(rows: list[EntitySeries], controls: dict[str, str]) -> str:
     angle_gap = float(controls["cell_gap"] or 0.8)
     maximum = float(controls["max_velocity"] or 1)
     color_center = float(controls["center_value"] or 0)
+    center_title = html.escape(controls["center_title"])
+    center_subtitle = html.escape(controls["center_subtitle"] or f"center {all_years[0]} / edge {all_years[-1]}")
     axis_gap_degrees = max(18.0, min(38.0, 360 / max(len(rows), 1) * 1.6))
     chart_start_angle = axis_gap_degrees / 2
     chart_degrees = 360 - axis_gap_degrees
@@ -319,8 +323,8 @@ def build_svg(rows: list[EntitySeries], controls: dict[str, str]) -> str:
         "<title>Velocity chart</title>",
         '<rect width="100%" height="100%" fill="#fffdf8"/>',
         f'<circle cx="{center}" cy="{center}" r="{inner_radius - 18}" fill="#ffffff" stroke="#d8d5cc"/>',
-        f'<text x="{center}" y="{center - 8}" text-anchor="middle" font-size="18" font-weight="700" fill="#202124">Velocity</text>',
-        f'<text x="{center}" y="{center + 16}" text-anchor="middle" font-size="12" fill="#667085">center {all_years[0]} / edge {all_years[-1]}</text>',
+        f'<text x="{center}" y="{center - 8}" text-anchor="middle" font-size="18" font-weight="700" fill="#202124">{center_title}</text>',
+        f'<text x="{center}" y="{center + 16}" text-anchor="middle" font-size="12" fill="#667085">{center_subtitle}</text>',
     ]
 
     for row_index, row in enumerate(rows):
@@ -380,7 +384,8 @@ def build_svg(rows: list[EntitySeries], controls: dict[str, str]) -> str:
 
 def render_legend(palette_name: str) -> None:
     colors = list(reversed(PALETTES.get(palette_name, PALETTES["rdylgn"])))
-    by_id("legend").innerHTML = "".join(f'<span style="background:{color}"></span>' for color in colors)
+    swatches = "".join(f'<span style="background:{color}"></span>' for color in colors)
+    by_id("legend").innerHTML = f'<span class="legend-mark">-</span>{swatches}<span class="legend-mark">+</span>'
 
 
 def render_chart(event=None) -> None:
@@ -412,6 +417,8 @@ async def load_demo(event=None) -> None:
     by_id("sort-mode").value = "end_velocity"
     by_id("sort-year").value = "2023"
     by_id("max-velocity").value = "10"
+    by_id("center-title").value = "GDP velocity"
+    by_id("center-subtitle").value = "2015 center / 2023 edge"
     by_id("chart-title").textContent = "GDP growth velocity"
     by_id("chart-subtitle").textContent = "Each spoke is a country; annual velocity runs from 2015 at the center to 2023 at the edge"
     render_chart()
@@ -450,7 +457,16 @@ def attach_events() -> None:
     by_id("render-chart").addEventListener("click", create_proxy(render_chart))
     by_id("download-svg").addEventListener("click", create_proxy(download_svg))
     by_id("csv-file").addEventListener("change", create_proxy(handle_file))
-    for identifier in ("palette", "sort-mode", "sort-year", "center-value", "max-velocity", "cell-gap"):
+    for identifier in (
+        "palette",
+        "sort-mode",
+        "sort-year",
+        "center-value",
+        "center-title",
+        "center-subtitle",
+        "max-velocity",
+        "cell-gap",
+    ):
         by_id(identifier).addEventListener("change", create_proxy(render_chart))
 
 
