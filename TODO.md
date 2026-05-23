@@ -27,5 +27,5 @@
 
 - [x] Run automated tests
 - [ ] Smoke-test the browser app locally
-- [ ] Create private GitHub repository
-- [ ] Push implementation and provide private GitHub link
+- [x] Create private GitHub repository
+- [x] Push implementation and provide private GitHub link
