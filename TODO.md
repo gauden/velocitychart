@@ -26,6 +26,7 @@
 ## Phase 4 - Verification and Publishing
 
 - [x] Run automated tests
-- [ ] Smoke-test the browser app locally
+- [x] Smoke-test static HTTP shell locally
+- [ ] Full PyScript runtime smoke test in a regular browser
 - [x] Create private GitHub repository
 - [x] Push implementation and provide private GitHub link
