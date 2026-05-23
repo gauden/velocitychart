@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Velocity Chart</title>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.11.1/core.css" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="https://pyscript.net/releases/2024.11.1/core.js"></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">Client-side PyScript tool</p>
+          <h1>Velocity Chart</h1>
+          <p class="lede">Generate circular rate-of-change charts from country, region, or entity time series.</p>
+        </div>
+        <div class="status-pill" id="status">Loading PyScript...</div>
+      </header>
+
+      <section class="workspace">
+        <aside class="controls" aria-label="Chart controls">
+          <div class="control-group">
+            <h2>Data</h2>
+            <div class="button-row">
+              <button id="load-demo" type="button">Load GDP demo</button>
+              <label class="file-button" for="csv-file">Upload CSV</label>
+              <input id="csv-file" type="file" accept=".csv,text/csv" />
+            </div>
+            <textarea id="csv-input" spellcheck="false" aria-label="CSV data"></textarea>
+          </div>
+
+          <div class="control-grid">
+            <label>
+              Format
+              <select id="csv-format">
+                <option value="wide">Wide: years are columns</option>
+                <option value="long">Long: year/value columns</option>
+              </select>
+            </label>
+            <label>
+              Entity column
+              <input id="entity-column" value="country" />
+            </label>
+            <label>
+              Code column
+              <input id="code-column" value="code" />
+            </label>
+            <label>
+              Group column
+              <input id="group-column" value="region" />
+            </label>
+            <label>
+              Year column
+              <input id="year-column" value="year" />
+            </label>
+            <label>
+              Value column
+              <input id="value-column" value="value" />
+            </label>
+          </div>
+
+          <div class="control-grid">
+            <label>
+              Sort by
+              <select id="sort-mode">
+                <option value="end_velocity">End velocity</option>
+                <option value="name">Name</option>
+                <option value="start_value">Start value</option>
+                <option value="end_value">End value</option>
+                <option value="selected_year_value">Selected year value</option>
+                <option value="selected_year_velocity">Selected year velocity</option>
+              </select>
+            </label>
+            <label>
+              Sort year
+              <input id="sort-year" type="number" value="2023" />
+            </label>
+            <label>
+              Palette
+              <select id="palette">
+                <option value="red_green">Red / green</option>
+                <option value="red_blue">Red / blue</option>
+                <option value="purple_teal">Purple / teal</option>
+                <option value="orange_cyan">Orange / cyan</option>
+              </select>
+            </label>
+            <label>
+              Center
+              <input id="center-value" type="number" step="0.1" value="0" />
+            </label>
+            <label>
+              Max velocity
+              <input id="max-velocity" type="number" step="0.1" value="10" />
+            </label>
+            <label>
+              Cell gap
+              <input id="cell-gap" type="number" step="0.1" value="0.8" />
+            </label>
+          </div>
+
+          <div class="button-row">
+            <button id="render-chart" type="button">Render chart</button>
+            <button id="download-svg" type="button">Download SVG</button>
+          </div>
+        </aside>
+
+        <section class="chart-panel" aria-label="Velocity chart output">
+          <div class="chart-toolbar">
+            <div>
+              <h2 id="chart-title">GDP growth velocity demo</h2>
+              <p id="chart-subtitle">Annual change in GDP growth rate, percentage points per year</p>
+            </div>
+            <div class="legend" id="legend"></div>
+          </div>
+          <div id="chart-output" class="chart-output">
+            <div class="empty-state">Load the demo or upload a CSV to render a velocity chart.</div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script type="py" src="./src/velocity_app.py" config="./pyscript.toml"></script>
+  </body>
+</html>
