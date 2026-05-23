@@ -299,7 +299,10 @@ def build_svg(rows: list[EntitySeries], controls: dict[str, str]) -> str:
     angle_gap = float(controls["cell_gap"] or 0.8)
     maximum = float(controls["max_velocity"] or 1)
     color_center = float(controls["center_value"] or 0)
-    angle_step = 360 / len(rows)
+    axis_gap_degrees = max(18.0, min(38.0, 360 / max(len(rows), 1) * 1.6))
+    chart_start_angle = axis_gap_degrees / 2
+    chart_degrees = 360 - axis_gap_degrees
+    angle_step = chart_degrees / len(rows)
     radial_step = max(24.0, min(46.0, 370 / len(all_years)))
     outer_radius = inner_radius + radial_step * len(all_years)
     view_size = int((outer_radius + 148) * 2)
@@ -321,9 +324,9 @@ def build_svg(rows: list[EntitySeries], controls: dict[str, str]) -> str:
     ]
 
     for row_index, row in enumerate(rows):
-        start_angle = row_index * angle_step + angle_gap
-        end_angle = (row_index + 1) * angle_step - angle_gap
-        mid_angle = row_index * angle_step + angle_step / 2
+        start_angle = chart_start_angle + row_index * angle_step + angle_gap
+        end_angle = chart_start_angle + (row_index + 1) * angle_step - angle_gap
+        mid_angle = chart_start_angle + row_index * angle_step + angle_step / 2
         velocities = calculate_velocities(row)
         for year_index, year in enumerate(all_years):
             value = velocities.get(year)
@@ -336,7 +339,7 @@ def build_svg(rows: list[EntitySeries], controls: dict[str, str]) -> str:
             label = html.escape(f"{row.name}, {year}: {value:.2f}")
             parts.append(f'<path d="{path}" fill="{color}" stroke="#ffffff" stroke-width="0.15"><title>{label}</title></path>')
 
-        label_radius = outer_radius + 25
+        label_radius = outer_radius + 34
         x, y = polar_to_cartesian(center, label_radius, mid_angle)
         rotation = mid_angle - 90
         anchor = "start"
@@ -344,7 +347,7 @@ def build_svg(rows: list[EntitySeries], controls: dict[str, str]) -> str:
             rotation += 180
             anchor = "end"
         parts.append(
-            f'<text x="{x:.2f}" y="{y:.2f}" font-size="9" fill="{group_palette[row.group]}" '
+            f'<text x="{x:.2f}" y="{y:.2f}" font-size="12" font-weight="700" fill="{group_palette[row.group]}" '
             f'text-anchor="{anchor}" dominant-baseline="middle" '
             f'transform="rotate({rotation:.2f} {x:.2f} {y:.2f})">{html.escape(row.code or row.name[:3].upper())}</text>'
         )
@@ -353,7 +356,7 @@ def build_svg(rows: list[EntitySeries], controls: dict[str, str]) -> str:
     for row_index, row in enumerate(rows):
         if row.group == previous_group:
             continue
-        boundary_angle = row_index * angle_step
+        boundary_angle = chart_start_angle + row_index * angle_step
         x1, y1 = polar_to_cartesian(center, inner_radius - 2, boundary_angle)
         x2, y2 = polar_to_cartesian(center, outer_radius + 10, boundary_angle)
         parts.append(f'<line x1="{x1:.2f}" y1="{y1:.2f}" x2="{x2:.2f}" y2="{y2:.2f}" stroke="#827c70" stroke-width="1.1"/>')
@@ -361,13 +364,8 @@ def build_svg(rows: list[EntitySeries], controls: dict[str, str]) -> str:
 
     for year_index, year in enumerate(all_years):
         radius = inner_radius + year_index * radial_step + radial_step / 2
-        parts.append(f'<circle cx="{center}" cy="{center}" r="{radius:.2f}" fill="none" stroke="#d8d5cc" stroke-width="0.35"/>')
-
-    for year in (all_years[0], all_years[len(all_years) // 2], all_years[-1]):
-        year_index = all_years.index(year)
-        radius = inner_radius + year_index * radial_step + radial_step / 2
         lx, ly = polar_to_cartesian(center, radius, 0)
-        parts.append(f'<text x="{lx:.2f}" y="{ly - 5:.2f}" text-anchor="middle" font-size="11" fill="#667085">{year}</text>')
+        parts.append(f'<text x="{lx:.2f}" y="{ly + 4:.2f}" text-anchor="middle" font-size="11" font-weight="650" fill="#667085">{year}</text>')
 
     legend_x = 28
     legend_y = view_size - 28 - 18 * len(group_names)

@@ -38,3 +38,10 @@
 - [x] Replace custom palettes with ColorBrewer diverging schemes
 - [x] Add ColorBrewer attribution
 - [x] Verify and publish redesign
+
+## Phase 6 - Axis Gap Refinement
+
+- [x] Reserve a top vertical spoke for year labels
+- [x] Enlarge and bold entity labels
+- [x] Remove circular tick guides
+- [ ] Verify and publish axis gap refinement
