@@ -384,8 +384,12 @@ def build_svg(rows: list[EntitySeries], controls: dict[str, str]) -> str:
 
 def render_legend(palette_name: str) -> None:
     colors = list(reversed(PALETTES.get(palette_name, PALETTES["rdylgn"])))
-    swatches = "".join(f'<span style="background:{color}"></span>' for color in colors)
-    by_id("legend").innerHTML = f'<span class="legend-mark">-</span>{swatches}<span class="legend-mark">+</span>'
+    swatches = "".join(f'<span class="legend-swatch" style="background:{color}"></span>' for color in colors)
+    by_id("legend").innerHTML = (
+        f'<span class="legend-mark" title="Negative velocity">-</span>'
+        f"{swatches}"
+        f'<span class="legend-mark" title="Positive velocity">+</span>'
+    )
 
 
 def render_chart(event=None) -> None:

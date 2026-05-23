@@ -210,15 +210,18 @@ select {
   margin-top: 4px;
 }
 
-.legend span {
+.legend-swatch {
   display: block;
   height: 12px;
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .legend-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: 800;
   line-height: 1;
   padding: 0 4px;
