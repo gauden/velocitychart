@@ -462,11 +462,12 @@ def attach_events() -> None:
         "sort-mode",
         "sort-year",
         "center-value",
-        "center-title",
-        "center-subtitle",
         "max-velocity",
         "cell-gap",
     ):
+        by_id(identifier).addEventListener("change", create_proxy(render_chart))
+    for identifier in ("center-title", "center-subtitle"):
+        by_id(identifier).addEventListener("input", create_proxy(render_chart))
         by_id(identifier).addEventListener("change", create_proxy(render_chart))
 
 
