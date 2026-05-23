@@ -44,4 +44,4 @@
 - [x] Reserve a top vertical spoke for year labels
 - [x] Enlarge and bold entity labels
 - [x] Remove circular tick guides
-- [ ] Verify and publish axis gap refinement
+- [x] Verify and publish axis gap refinement
