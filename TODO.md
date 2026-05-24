@@ -58,4 +58,4 @@
 - [x] Lower responsive breakpoint below iPad landscape widths
 - [x] Use percentage shell width instead of viewport-width shell sizing
 - [x] Add dynamic viewport height fallback
-- [ ] Verify and publish tablet layout repair
+- [x] Verify and publish tablet layout repair
