@@ -66,3 +66,11 @@
 - [x] Add live spoke gap value readout
 - [x] Re-render chart while slider moves
 - [x] Verify and publish spoke gap slider
+
+## Phase 10 - Source View
+
+- [x] Remove spoke gap numeric readout
+- [x] Add View Source control beside status
+- [x] Generate reusable Python source from current data and settings
+- [x] Add Python source download
+- [ ] Verify and publish source view

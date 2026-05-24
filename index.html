@@ -16,7 +16,10 @@
           <h1>Velocity Chart</h1>
           <p class="lede">Generate circular rate-of-change charts from country, region, or entity time series.</p>
         </div>
-        <div class="status-pill" id="status">Loading PyScript...</div>
+        <div class="header-actions">
+          <button id="view-source" type="button">View Source</button>
+          <div class="status-pill" id="status">Loading PyScript...</div>
+        </div>
       </header>
 
       <section class="workspace">
@@ -105,10 +108,7 @@
             </label>
             <label>
               Spoke gap
-              <span class="slider-control">
-                <input id="cell-gap" type="range" min="0" max="4" step="0.1" value="0.8" />
-                <output id="cell-gap-value" for="cell-gap">0.8</output>
-              </span>
+              <input id="cell-gap" type="range" min="0" max="4" step="0.1" value="0.8" />
             </label>
           </div>
 
@@ -143,6 +143,16 @@
           <p class="attribution">Color schemes from ColorBrewer 2.0 by Cynthia A. Brewer, Geography, Pennsylvania State University.</p>
           <div id="chart-output" class="chart-output">
             <div class="empty-state">Load the demo or upload a CSV to render a velocity chart.</div>
+          </div>
+          <div id="source-panel" class="source-panel hidden" aria-label="Python source code">
+            <div class="source-toolbar">
+              <h2>Python source</h2>
+              <div class="button-row">
+                <button id="download-python" type="button">Download Python</button>
+                <button id="close-source" type="button">View Chart</button>
+              </div>
+            </div>
+            <textarea id="source-code" spellcheck="false" aria-label="Generated Python source"></textarea>
           </div>
         </section>
       </section>

@@ -79,6 +79,14 @@ textarea:focus-visible {
   padding: 0 0 18px;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .eyebrow {
   margin: 0 0 8px;
   color: var(--accent);
@@ -202,19 +210,6 @@ input[type="range"] {
   accent-color: var(--accent);
 }
 
-.slider-control {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 3.5ch;
-  gap: 8px;
-  align-items: center;
-}
-
-.slider-control output {
-  color: var(--ink);
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-}
-
 .chart-panel {
   min-height: 780px;
   overflow: hidden;
@@ -267,6 +262,38 @@ input[type="range"] {
   overflow: auto;
   padding: 12px;
   background: #fffdf8;
+}
+
+.source-panel {
+  min-height: 690px;
+  padding: 12px;
+  background: #fffdf8;
+}
+
+.source-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+#source-code {
+  width: 100%;
+  min-height: 620px;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 12px;
+  background: #1f2933;
+  color: #f8fafc;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.hidden {
+  display: none;
 }
 
 .chart-output svg {
