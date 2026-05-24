@@ -73,4 +73,4 @@
 - [x] Add View Source control beside status
 - [x] Generate reusable Python source from current data and settings
 - [x] Add Python source download
-- [ ] Verify and publish source view
+- [x] Verify and publish source view
