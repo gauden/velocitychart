@@ -83,11 +83,11 @@
             <label>
               Palette
               <select id="palette">
-                <option value="rdylgn">ColorBrewer RdYlGn</option>
-                <option value="rdbu">ColorBrewer RdBu</option>
-                <option value="brbg">ColorBrewer BrBG</option>
-                <option value="piyg">ColorBrewer PiYG</option>
-                <option value="puor">ColorBrewer PuOr</option>
+                <option value="decrease_green_increase_red">Decrease green, increase red</option>
+                <option value="decrease_blue_increase_red">Decrease blue, increase red</option>
+                <option value="decrease_teal_increase_brown">Decrease teal, increase brown</option>
+                <option value="decrease_green_increase_pink">Decrease green, increase pink</option>
+                <option value="decrease_purple_increase_orange">Decrease purple, increase orange</option>
               </select>
             </label>
             <label>
@@ -140,7 +140,6 @@
               <span class="legend-mark" title="Positive velocity">+</span>
             </div>
           </div>
-          <p class="attribution">Color schemes from ColorBrewer 2.0 by Cynthia A. Brewer, Geography, Pennsylvania State University.</p>
           <div id="chart-output" class="chart-output">
             <div class="empty-state">Load the demo or upload a CSV to render a velocity chart.</div>
           </div>
@@ -156,6 +155,9 @@
           </div>
         </section>
       </section>
+      <footer class="app-footer">
+        Color schemes from ColorBrewer 2.0 by Cynthia A. Brewer, Geography, Pennsylvania State University.
+      </footer>
     </main>
 
     <script type="py" src="./src/velocity_app.py"></script>

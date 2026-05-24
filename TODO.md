@@ -74,3 +74,10 @@
 - [x] Generate reusable Python source from current data and settings
 - [x] Add Python source download
 - [x] Verify and publish source view
+
+## Phase 11 - Palette Naming and Attribution
+
+- [x] Replace palette scheme-code names with descriptive names
+- [x] Move ColorBrewer attribution to app footer
+- [x] Put ColorBrewer attribution comment above generated PALETTES
+- [ ] Verify and publish palette naming update

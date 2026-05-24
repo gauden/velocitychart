@@ -249,12 +249,11 @@ input[type="range"] {
   padding: 0 4px;
 }
 
-.attribution {
-  margin: 0;
-  border-bottom: 1px solid var(--line);
-  padding: 8px 18px;
+.app-footer {
+  padding: 14px 2px 0;
   color: var(--muted);
   font-size: 0.78rem;
+  text-align: center;
 }
 
 .chart-output {
