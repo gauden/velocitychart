@@ -287,6 +287,22 @@ def annular_cell_path(center: float, inner: float, outer: float, start_angle: fl
     )
 
 
+def center_title_svg(text: str, center: float) -> str:
+    words = [html.escape(word) for word in text.split() if word.strip()]
+    if not words:
+        words = ["Velocity"]
+    line_height = 20
+    start_y = center - ((len(words) - 1) * line_height / 2) - 4
+    tspans = "".join(
+        f'<tspan x="{center}" y="{start_y + index * line_height:.2f}">{word}</tspan>'
+        for index, word in enumerate(words)
+    )
+    return (
+        f'<text text-anchor="middle" font-size="18" font-weight="700" '
+        f'fill="#202124">{tspans}</text>'
+    )
+
+
 def build_svg(rows: list[EntitySeries], controls: dict[str, str]) -> str:
     selected_year = int(controls["sort_year"]) if controls["sort_year"].isdigit() else None
     rows = sort_series(rows, controls["sort_mode"], selected_year)
@@ -301,8 +317,8 @@ def build_svg(rows: list[EntitySeries], controls: dict[str, str]) -> str:
     angle_gap = float(controls["cell_gap"] or 0.8)
     maximum = float(controls["max_velocity"] or 1)
     color_center = float(controls["center_value"] or 0)
-    center_title = html.escape(controls["center_title"])
-    center_subtitle = html.escape(controls["center_subtitle"] or f"center {all_years[0]} / edge {all_years[-1]}")
+    center_title = controls["center_title"]
+    center_subtitle = html.escape(controls["center_subtitle"] or f"{all_years[0]}—{all_years[-1]}")
     axis_gap_degrees = max(18.0, min(38.0, 360 / max(len(rows), 1) * 1.6))
     chart_start_angle = axis_gap_degrees / 2
     chart_degrees = 360 - axis_gap_degrees
@@ -323,8 +339,8 @@ def build_svg(rows: list[EntitySeries], controls: dict[str, str]) -> str:
         "<title>Velocity chart</title>",
         '<rect width="100%" height="100%" fill="#fffdf8"/>',
         f'<circle cx="{center}" cy="{center}" r="{inner_radius - 18}" fill="#ffffff" stroke="#d8d5cc"/>',
-        f'<text x="{center}" y="{center - 8}" text-anchor="middle" font-size="18" font-weight="700" fill="#202124">{center_title}</text>',
-        f'<text x="{center}" y="{center + 16}" text-anchor="middle" font-size="12" fill="#667085">{center_subtitle}</text>',
+        center_title_svg(center_title, center),
+        f'<text x="{center}" y="{center + 38}" text-anchor="middle" font-size="12" fill="#667085">{center_subtitle}</text>',
     ]
 
     for row_index, row in enumerate(rows):
@@ -421,8 +437,8 @@ async def load_demo(event=None) -> None:
     by_id("sort-mode").value = "end_velocity"
     by_id("sort-year").value = "2023"
     by_id("max-velocity").value = "10"
-    by_id("center-title").value = "GDP velocity"
-    by_id("center-subtitle").value = "2015 center / 2023 edge"
+    by_id("center-title").value = "GDP Growth Velocity"
+    by_id("center-subtitle").value = ""
     by_id("chart-title").textContent = "GDP growth velocity"
     by_id("chart-subtitle").textContent = "Each spoke is a country; annual velocity runs from 2015 at the center to 2023 at the edge"
     render_chart()
