@@ -80,4 +80,4 @@
 - [x] Replace palette scheme-code names with descriptive names
 - [x] Move ColorBrewer attribution to app footer
 - [x] Put ColorBrewer attribution comment above generated PALETTES
-- [ ] Verify and publish palette naming update
+- [x] Verify and publish palette naming update
