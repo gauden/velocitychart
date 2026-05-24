@@ -52,3 +52,10 @@
 - [x] Add center subtitle text control
 - [x] Add negative and positive legend endpoint labels
 - [ ] Verify and publish label controls
+
+## Phase 8 - Tablet Layout Repair
+
+- [x] Lower responsive breakpoint below iPad landscape widths
+- [x] Use percentage shell width instead of viewport-width shell sizing
+- [x] Add dynamic viewport height fallback
+- [ ] Verify and publish tablet layout repair
