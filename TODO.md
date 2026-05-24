@@ -65,4 +65,4 @@
 - [x] Replace numeric spoke gap input with range slider
 - [x] Add live spoke gap value readout
 - [x] Re-render chart while slider moves
-- [ ] Verify and publish spoke gap slider
+- [x] Verify and publish spoke gap slider
