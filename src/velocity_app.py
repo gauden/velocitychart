@@ -424,6 +424,11 @@ def render_chart(event=None) -> None:
     set_status(f"Rendered {len(rows)} series")
 
 
+def update_spoke_gap(event=None) -> None:
+    by_id("cell-gap-value").textContent = by_id("cell-gap").value
+    render_chart()
+
+
 async def load_demo(event=None) -> None:
     try:
         response = await fetch("./data/world_bank_gdp_growth_demo.csv")
@@ -437,6 +442,8 @@ async def load_demo(event=None) -> None:
     by_id("sort-mode").value = "end_velocity"
     by_id("sort-year").value = "2023"
     by_id("max-velocity").value = "10"
+    by_id("cell-gap").value = "0.8"
+    by_id("cell-gap-value").textContent = "0.8"
     by_id("center-title").value = "GDP Growth Velocity"
     by_id("center-subtitle").value = ""
     by_id("chart-title").textContent = "GDP growth velocity"
@@ -483,9 +490,10 @@ def attach_events() -> None:
         "sort-year",
         "center-value",
         "max-velocity",
-        "cell-gap",
     ):
         by_id(identifier).addEventListener("change", create_proxy(render_chart))
+    by_id("cell-gap").addEventListener("input", create_proxy(update_spoke_gap))
+    by_id("cell-gap").addEventListener("change", create_proxy(update_spoke_gap))
     for identifier in ("center-title", "center-subtitle"):
         by_id(identifier).addEventListener("input", create_proxy(render_chart))
         by_id(identifier).addEventListener("change", create_proxy(render_chart))

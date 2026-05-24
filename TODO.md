@@ -59,3 +59,10 @@
 - [x] Use percentage shell width instead of viewport-width shell sizing
 - [x] Add dynamic viewport height fallback
 - [x] Verify and publish tablet layout repair
+
+## Phase 9 - Spoke Gap Slider
+
+- [x] Replace numeric spoke gap input with range slider
+- [x] Add live spoke gap value readout
+- [x] Re-render chart while slider moves
+- [ ] Verify and publish spoke gap slider

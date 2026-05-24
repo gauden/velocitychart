@@ -195,6 +195,26 @@ select {
   font-weight: 500;
 }
 
+input[type="range"] {
+  min-height: 36px;
+  border: 0;
+  padding: 0;
+  accent-color: var(--accent);
+}
+
+.slider-control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 3.5ch;
+  gap: 8px;
+  align-items: center;
+}
+
+.slider-control output {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
 .chart-panel {
   min-height: 780px;
   overflow: hidden;
